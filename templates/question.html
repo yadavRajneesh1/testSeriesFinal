@@ -1,0 +1,31 @@
+{% from "_formhelper.html" import render_field %}
+{% extends "layout.html"%}
+{% block content %}
+<style>
+    .w-100{
+        min-width:250px !important;
+    }
+</style>
+
+
+<div class="container">
+    <h1>Submit Your Question</h1>
+
+    <div class="row m-0">
+<!--        <div class="col-md-4"></div>-->
+<!--         <div class="col-md-4"><div>-->
+<form method="POST" action="question">
+    <dl>
+        {{quest.csrf_token}}
+        {{render_field(quest.question,class="w-100")}}
+        {{render_field(quest.option1,class="w-100")}}
+        {{render_field(quest.option2,class="w-100")}}
+        {{render_field(quest.option3,class="w-100")}}
+        {{render_field(quest.option4,class="w-100")}}
+        {{render_field(quest.submit,class="w-100 btn btn-primary")}}
+    </dl>
+</form>
+</div></div>
+                 <div class="col-md-4"></div>
+
+{%endblock%}

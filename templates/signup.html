@@ -1,0 +1,34 @@
+{% from "_formhelper.html" import render_field %}
+{% extends "layout.html"%}
+{%block content%}
+<style>
+   .larger{
+   width:100%;
+   }
+</style>
+
+
+<div class="container pt-5 mt-5">
+    <di class="row m-0">
+ <div class="col-md-4"></div>
+        <div class="col-md-4 p-0">
+             <h1>Create Your Account</h1>
+            <form method="POST" action="signup" id="signup">
+
+    <dl>
+    {{form.csrf_token}}
+    {{render_field(form.username,class='larger')}}
+    {{render_field(form.password,class='larger')}}
+    {{render_field(form.remember,)}}
+    {{render_field(form.submit,class='bg-primary btn')}}
+    </dl>
+</form>
+        </div>
+ <div class="col-md-4 p-0"></div>
+    </di>
+
+
+</div>
+
+{%endblock%}
+
