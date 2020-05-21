@@ -8,6 +8,9 @@
 
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		 <a class="navbar-brand" href="#">
+    <img src="{{url_for('static', filename='images/logo.jpg')}}" width="30" height="30" alt="" loading="lazy">
+  </a>
 		  <a class="navbar-brand" href="myinfo">Navbar</a>
 		    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		         <span class="navbar-toggler-icon"></span>
@@ -15,7 +18,9 @@
 	    <div class="collapse navbar-collapse" id="navbarNav">
                    <ul class="navbar-nav">
                     <li class="nav-item active"><a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a></li>
-		   <li class="nav-item"><a class="nav-link" href="signup">Features</a></li>
+		   <li class="nav-item"><a class="nav-link" href="signup">Register Free</a></li>
+					    <li class="nav-item"><a class="nav-link" href="login">Login</a></li>
+					   <li class="nav-item"><a class="nav-link" href="logout">Logout</a></li>
                    <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
 		  <li class="nav-item"><a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a></li>
 					   <li class="nav-item"><a class="nav-link " href="question" tabindex="-1" aria-disabled="true">Upload Question</a></li>
