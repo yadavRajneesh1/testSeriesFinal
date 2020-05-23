@@ -17,6 +17,7 @@
 <form method="POST" action="question">
     <dl>
         {{quest.csrf_token}}
+        {{render_field(quest.Subject,class="w-200")}}
         {{render_field(quest.question,class="w-100")}}
         {{render_field(quest.option1,class="w-100")}}
         {{render_field(quest.option2,class="w-100")}}
