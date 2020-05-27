@@ -1,9 +1,9 @@
 from functools import wraps
-from flask import Flask, render_template, request, session, flash, url_for
+from flask import Flask, render_template, request, session, flash, url_for, make_response, jsonify
 from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import InputRequired, Email
 import psycopg2
 import json
@@ -33,6 +33,9 @@ class Question(FlaskForm):
     option2 = TextAreaField('option2', validators=[InputRequired()])
     option3 = TextAreaField('option3', validators=[InputRequired()])
     option4 = TextAreaField('option4', validators=[InputRequired()])
+    Subject = SelectField('Subject',
+                          choices=[('English', 'English'), ('Maths', 'Maths'), ('General Science', 'General Science'),
+                                   ('Reasoning', 'Reasoning')])
     submit = SubmitField('Submit')
 
 
@@ -54,7 +57,6 @@ def home():
 
 
 @app.route('/myinfo')
-@login_required
 def Navbar():
     return render_template("myinfo.html")
 
@@ -67,7 +69,7 @@ def signup():
         password = login.password.data
         print(name)
         print(password)
-        hassed_password = generate_password_hash(login.password.data, method='sha256')
+        hassed_password = generate_password_hash(login.password.data, method=params['methods'])
         insert_query = '''INSERT INTO public."user"(
         "UserEmail", "UserPassword")
         VALUES (%s,%s);'''
@@ -107,9 +109,9 @@ def logout():
     return render_template('home.html')
 
 
-@app.route('/question', methods=['GET', 'POST'])
+@app.route('/uploadQuestion', methods=['GET', 'POST'])
 @login_required
-def question():
+def upload_question():
     quest = Question()
     if quest.validate_on_submit():
         insert_query = '''INSERT INTO public."Question"(
@@ -122,6 +124,60 @@ def question():
         # name = request.form.get('username')
         # return "Form submitted Succesfully  " + login.username.data + " " + login.password.data
     return render_template('question.html', quest=quest)
+
+
+@app.route('/show', methods=['GET', 'POST'])
+def show():
+    select_query = '''SELECT sno, question, option1, option2, option3, option4
+	FROM public."Question";'''
+    cursor.execute(select_query)
+    res = cursor.fetchall()
+    connection.commit()
+    result = jsonify(res)
+    # name = request.form.get('username')
+    # return "Form submitted Succesfully  " + login.username.data + " " + login.password.data
+    print(res)
+    return render_template('show.html', result=res)
+
+
+@app.route('/question', methods=['GET', 'POST'])
+@login_required
+def question():
+    quest = Question()
+    # print("request====", request.form.get('Subject'))
+    if quest.validate_on_submit():
+        sub = quest.Subject.data
+        print("sub" + sub)
+        return render_template('thanks.html', quest=quest)
+        # name = request.form.get('username')
+        # return "Form submitted Succesfully  " + login.username.data + " " + login.password.data
+    return render_template('question.html', quest=quest)
+
+
+@app.route('/ssc', methods=['GET', 'POST'])
+def ssc():
+    select_query = '''SELECT sno, chapter_name, topic_name, topic_in_detail
+	FROM public.ssc_maths;'''
+    cursor.execute(select_query)
+    ssc_math_info = cursor.fetchall()
+    connection.commit()
+    result = jsonify(ssc_math_info)
+    return render_template("ssc_copy.html", result=ssc_math_info, topic_detail=ssc_math_info)
+
+
+@app.route('/<string:sno>', methods=['GET', 'POST'])
+def topic_in_detail(sno):
+    print(sno)
+    select_query = '''SELECT sno, chapter_name, topic_name, topic_in_detail
+    	FROM public.ssc_maths;'''
+    cursor.execute(select_query)
+    ssc_math_info = cursor.fetchall()
+    select_topic_detail = '''SELECT sno, chapter_name, topic_name, topic_in_detail
+	FROM public.ssc_maths where topic_name=%s;'''
+    cursor.execute(select_topic_detail, (sno,))
+    topic_detail = cursor.fetchall()
+    connection.commit()
+    return render_template("ssc_copy.html", result=ssc_math_info, topic_detail=topic_detail)
 
 
 @app.route('/thanks', methods=['GET', 'POST'])
